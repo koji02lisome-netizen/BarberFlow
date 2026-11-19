@@ -1,0 +1,28 @@
+# Caixa de entrada de arquivos brutos (não versionar)
+_inbox/
+
+# Arquivos temporários do sistema operacional (macOS / Windows / Linux)
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Arquivos temporários de edição e Office
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+~$*
+
+# Logs e caches
+*.log
+.vscode/
+.idea/
