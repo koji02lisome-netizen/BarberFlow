@@ -1,0 +1,20 @@
+# Regras de Negócio — BarberFlow
+
+Este documento especifica as **Regras de Negócio (RN)** que governam o comportamento operacional do **BarberFlow**, garantindo consistência de agenda, clareza comercial para o cliente e integridade transacional para a barbearia.
+
+---
+
+## Catálogo de Regras de Negócio
+
+| ID | Regra de Negócio | Descrição Detalhada | Critério de Validação / Evidência |
+| :--- | :--- | :--- | :--- |
+| **RN01** | **Bloqueio de reserva duplicada (Concorrência)** | Não é permitido confirmar dois agendamentos para o mesmo profissional em horários coincidentes ou com sobreposição de intervalo. Antes de persistir a reserva, o servidor valida em transação atômica se o slot permanece disponível; caso já tenha sido ocupado, exibe alerta e solicita a escolha de novo horário. | Fluxograma (`fluxograma-operacional.png`), A3 (Tabela 5 e 6) |
+| **RN02** | **Preço e duração definidos por serviço** | Cada serviço possui valor e duração estimada próprios (ex.: *Corte Social* = 45 min / R$ 50,00; *Barba Completa* = 30 min / R$ 35,00; *Corte + Barba* = 75 min / R$ 80,00). O total estimado e o intervalo reservado na agenda do profissional são calculados com base nos serviços selecionados. | `S1` (`tela1.html`), Pré-Projeto (Seção 6), A3 (Seção 2.1) |
+| **RN03** | **Disponibilidade vinculada à agenda do barbeiro** | A grade de horários exibida ao cliente (`Manhã`, `Tarde`, `Noite`) reflete exclusivamente a disponibilidade real do profissional selecionado, considerando sua jornada, reservas já confirmadas e bloqueios cadastrados. Horários já ocupados aparecem como **Indisponíveis** e não podem ser selecionados. | `S1` e `S2` (`tela1.html`, `tela2.html`), A3 (Seção 4.1) |
+| **RN04** | **Horários bloqueados e pausa para almoço** | O barbeiro pode registrar bloqueios manuais em sua agenda (ex.: intervalo de almoço ou pausa operacional) por meio do Painel do Barbeiro. Slots bloqueados são exibidos como **Bloqueados** na grade pública do cliente e ficam impedidos para reserva. | `S2` (`tela2.html`) e `S5` (`tela5.html`) |
+| **RN05** | **Dados obrigatórios para confirmação da reserva** | Para finalizar o agendamento, o cliente deve informar obrigatoriamente **Nome Completo** e **WhatsApp (com DDD)**. O campo **Observações** (preferências do corte) é opcional. Reservas sem os dados obrigatórios válidos não devem ser confirmadas. | `S3` (`tela3.html`), Fluxograma |
+| **RN06** | **Reserva temporária de 10 minutos** | Ao avançar para a tela de preenchimento de dados e confirmação (`S3`), o horário escolhido é mantido em reserva temporária pelo prazo máximo de **10 minutos** para conclusão da operação pelo cliente, evitando disputas durante a digitação. Expirado o prazo sem confirmação, o slot retorna à disponibilidade pública. | `S3` (`tela3.html`) |
+| **RN07** | **Tolerância de atraso de 10 minutos** | Após a confirmação, aplica-se a política padrão de **tolerância máxima de 10 minutos de atraso** em relação ao horário agendado, informada explicitamente no comprovante da reserva para evitar impacto cascata nos atendimentos seguintes. | `S4` (`tela4.html`) |
+| **RN08** | **Cancelamento gratuito até 2 horas antes** | O cliente pode cancelar (ou reagendar, conforme fluxo do A3) sua reserva sem custo ou penalidade desde que a solicitação ocorra com **antecedência mínima de 2 horas** em relação ao horário marcado. | `S4` (`tela4.html`), A3 (Tabela 4) |
+| **RN09** | **Ciclo de status do atendimento no Painel Diário** | Cada agendamento na agenda do barbeiro segue o ciclo de estados operacionais: **Agendado** → **Em Atendimento** → **Concluído** (além de **Espaço Bloqueado** para bloqueios internos). Somente agendamentos futuros podem ser iniciados pelo profissional. | `S5` (`tela5.html`), Roteiro Cockpit (Tela 3) |
+| **RN10** | **Baixa automática de estoque no PDV *(Módulo Futuro A3)*** | Toda venda de produto registrada no módulo de PDV (com seleção de quantidade e forma de pagamento como Pix ou Cartão) deve decrementar automaticamente a quantidade disponível no estoque e compor os indicadores mensais de faturamento. | A3 (Seção 2.1, Tabela 4 e Tabela 5) |
