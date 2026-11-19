@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BarberFlow - S5 Painel do Barbeiro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================
+       DESIGN SYSTEM UNIFICADO (S1 a S5)
+       ========================================= */
+    :root {
+      --bg-presentation-start: #9ca3af;
+      --bg-presentation-end: #4b5563; 
+      
+      --bg-app: #f8fafc;
+      --surface: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      
+      --accent: #b91c1c;
+      --accent-hover: #991b1b;
+      --accent-light: #fef2f2;
+      
+      --success: #16a34a;
+      --disabled-bg: #f1f5f9;
+      --disabled-text: #94a3b8;
+      
+      --radius-sm: 12px;
+      --radius-md: 16px;
+      --radius-btn: 14px;
+      --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    /* =========================================
+       MOCKUP DO CELULAR
+       ========================================= */
+    .phone-mockup {
+      width: 100%;
+      max-width: 390px;
+      height: 844px;
+      background-color: var(--bg-app);
+      border-radius: 52px; 
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 14px solid #141414;
+      box-shadow: 
+        0 0 0 2px #374151,
+        0 40px 60px -15px rgba(0, 0, 0, 0.65),
+        0 20px 30px -10px rgba(0, 0, 0, 0.4);
+    }
+
+    .status-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 28px;
+      z-index: 101;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.3px;
+    }
+
+    .status-icons {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-icons svg {
+      height: 12px;
+      fill: currentColor;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 11px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 32px;
+      background-color: #000000;
+      border-radius: 20px;
+      z-index: 100;
+    }
+
+    /* =========================================
+       CABEÇALHO ADMINISTRATIVO (Painel)
+       ========================================= */
+    .admin-header {
+      padding: 56px 24px 20px;
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .admin-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .btn-logout {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      transition: color 0.2s ease;
+    }
+
+    .btn-logout:hover {
+      color: var(--accent);
+    }
+
+    .btn-logout svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+
+    .admin-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .admin-subtitle strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    /* =========================================
+       ÁREA DE CONTEÚDO (TIMELINE)
+       ========================================= */
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 20px;
+      padding-bottom: 120px;
+      background-color: var(--bg-app);
+    }
+
+    .main-content::-webkit-scrollbar {
+      display: none;
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+    }
+
+    .time-col {
+      width: 48px;
+      flex-shrink: 0;
+      text-align: right;
+      padding-top: 14px;
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      position: relative;
+    }
+
+    /* =========================================
+       CARDS DE AGENDAMENTO
+       ========================================= */
+    .appt-card {
+      flex: 1;
+      background-color: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.02);
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .client-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .service-info {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    /* Badges de Status */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* ESTADO: Concluído */
+    .item-done .time-col {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+    .item-done .appt-card {
+      background-color: transparent;
+      border-style: dashed;
+      opacity: 0.7;
+      box-shadow: none;
+    }
+    .item-done .badge {
+      background-color: var(--disabled-bg);
+      color: var(--text-muted);
+    }
+
+    /* ESTADO: Em Atendimento (Destaque Principal) */
+    .item-active .time-col {
+      color: var(--accent);
+    }
+    .item-active .appt-card {
+      background-color: var(--accent-light);
+      border-color: var(--accent);
+      box-shadow: 0 4px 12px rgba(185, 28, 28, 0.15);
+    }
+    .item-active .badge {
+      background-color: var(--accent);
+      color: #ffffff;
+    }
+    .item-active .client-name {
+      color: var(--accent);
+    }
+
+    /* ESTADO: Agendado (Próximo) */
+    .item-next .badge {
+      background-color: #dcfce7;
+      color: #16a34a;
+    }
+    .btn-play {
+      background-color: var(--success);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.3);
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      transition: transform 0.2s ease;
+    }
+    .btn-play:hover {
+      transform: scale(1.1);
+    }
+    .btn-play svg {
+      width: 12px;
+      height: 12px;
+      fill: #ffffff;
+      margin-left: 2px; /* Ajuste visual do triângulo */
+    }
+
+    /* ESTADO: Bloqueado */
+    .item-blocked .time-col {
+      color: var(--disabled-text);
+    }
+    .item-blocked .appt-card {
+      background-color: var(--disabled-bg);
+      border-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: none;
+    }
+    .item-blocked .lock-icon {
+      color: var(--disabled-text);
+      display: flex;
+      align-items: center;
+    }
+    .item-blocked .lock-icon svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+    }
+    .item-blocked .client-name {
+      color: var(--text-muted);
+    }
+    .item-blocked .service-info {
+      margin-bottom: 0;
+    }
+
+    /* =========================================
+       RODAPÉ FIXO ADMINISTRATIVO
+       ========================================= */
+    .footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--surface);
+      padding: 18px 24px 34px;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -8px 24px rgba(15, 23, 42, 0.06);
+      z-index: 10;
+    }
+
+    .btn-dark {
+      background-color: var(--text-main);
+      color: var(--surface);
+      border: none;
+      width: 100%;
+      padding: 16px;
+      border-radius: var(--radius-btn);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
+      transition: all 0.2s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-dark:hover {
+      background-color: #000000;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.3);
+    }
+
+    .btn-dark svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.2;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-mockup">
+    
+    <!-- Barra de Status -->
+    <div class="status-bar">
+      <div class="time">9:41</div>
+      <div class="status-icons">
+        <svg viewBox="0 0 17 11" width="16" height="10"><path d="M1 11h2.5V7.5H1V11zm4.5 0h2.5V5h-2.5v6zm4.5 0h2.5V2.5h-2.5V11zm4.5 0H17V0h-2.5v11z"/></svg>
+        <svg viewBox="0 0 16 11" width="16" height="11"><path d="M8 11c-1.3 0-2.4-.4-3.3-1.1L8 5.6l3.3 4.3C10.4 10.6 9.3 11 8 11zm0-3.3c-2.3 0-4.3-.8-6-2.2L8 .3l6 7.2c-1.7 1.4-3.7 2.2-6 2.2z"/></svg>
+        <svg viewBox="0 0 25 12" width="24" height="11">
+          <rect x="1" y="1" width="20" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="3" y="3" width="14" height="6" rx="1" fill="currentColor"/>
+          <path d="M23 4v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="dynamic-island"></div>
+    
+    <!-- Cabeçalho do Painel -->
+    <header class="admin-header">
+      <div class="header-top">
+        <h1 class="admin-title">Painel do Barbeiro</h1>
+        <button class="btn-logout" aria-label="Sair">
+          Sair
+          <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </button>
+      </div>
+      <div class="admin-subtitle">
+        Quarta-feira, 16 de Novembro<br>
+        Profissional: <strong>Carlos Silva</strong>
+      </div>
+    </header>
+
+    <!-- Timeline da Agenda -->
+    <main class="main-content">
+      <div class="timeline">
+        
+        <!-- 1. Passado / Concluído -->
+        <div class="timeline-item item-done">
+          <div class="time-col">14:00</div>
+          <div class="appt-card">
+            <div class="card-header">
+              <span class="client-name">João Pereira</span>
+              <span class="badge">Concluído</span>
+            </div>
+            <div class="service-info">Corte (R$ 50)</div>
+          </div>
+        </div>
+
+        <!-- 2. Presente / Em Atendimento (Destaque Principal) -->
+        <div class="timeline-item item-active">
+          <div class="time-col">15:15</div>
+          <div class="appt-card">
+            <div class="card-header">
+              <span class="client-name">Rafael Souza</span>
+              <span class="badge">Em Atendimento</span>
+            </div>
+            <div class="service-info">Corte + Barba (R$ 80)</div>
+          </div>
+        </div>
+
+        <!-- 3. Futuro / Agendado -->
+        <div class="timeline-item item-next">
+          <div class="time-col">16:30</div>
+          <div class="appt-card">
+            <div class="card-header">
+              <span class="client-name">Mario Silva</span>
+              <span class="badge">Agendado</span>
+            </div>
+            <div class="service-info">Corte Degradê +<br>Barboterapia (R$ 105)</div>
+            <button class="btn-play" aria-label="Iniciar Atendimento">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Bloqueado / Almoço -->
+        <div class="timeline-item item-blocked">
+          <div class="time-col">17:15</div>
+          <div class="appt-card">
+            <div class="lock-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <div>
+              <div class="client-name">Espaço Bloqueado</div>
+              <div class="service-info">Bloqueio Horário/Almoço</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Rodapé Administrativo -->
+    <footer class="footer">
+      <button class="btn-dark">
+        <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Bloquear Horário / Almoço
+      </button>
+    </footer>
+
+  </div>
+
+</body>
+</html>

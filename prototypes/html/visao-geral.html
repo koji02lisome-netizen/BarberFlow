@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BarberFlow - UX Journey Premium</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* =========================================
+       RESET GERAL E FUNDO
+       ========================================= */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at center, #1e293b 0%, #080f1e 100%);
+      color: #ffffff;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden; 
+    }
+
+    /* =========================================
+       HEADER GLASSMORPHISM (Conjunto Premium Unificado)
+       ========================================= */
+    .board-header {
+      position: fixed;
+      top: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding: 14px 40px;
+      
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      z-index: 100;
+    }
+    
+    .board-logo {
+      width: 68px; 
+      height: 68px;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .header-text-block {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .board-header h1 {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      line-height: 1;
+    }
+
+    .board-header h1 .brand-red {
+      color: #b91c1c;
+      font-weight: 400;
+    }
+
+    /* Título da tela embutido e estilizado com tom avermelhado */
+    .dynamic-slide-title {
+      background: rgba(185, 28, 28, 0.15);
+      border: 1px solid rgba(185, 28, 28, 0.3);
+      color: #fca5a5; /* Vermelho clarinho premium */
+      padding: 4px 14px;
+      border-radius: 16px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transition: all 0.3s ease;
+    }
+
+    /* Tag lateral superior (Protótipo) */
+    .badge-corner {
+      position: fixed;
+      top: 40px;
+      right: 48px;
+      background: rgba(185, 28, 28, 0.1);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      z-index: 100;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    /* =========================================
+       CARROSSEL E DIMENSÕES
+       ========================================= */
+    .slider-viewport {
+      flex: 1;
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.02) 0%, transparent 65%);
+    }
+
+    .slider-track {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.4, 1); 
+      will-change: transform;
+    }
+
+    .slide {
+      flex: 0 0 100vw;
+      width: 100vw;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      /* Espaçamento otimizado para respeitar o Header e o Footer */
+      padding-top: 110px; 
+      padding-bottom: 70px; 
+    }
+
+    /* =========================================
+       CELULAR (Cálculo perfeito sem Scrollbar)
+       ========================================= */
+    .device-wrapper {
+      /* Altura de 920px garante que a tela interna (912px reais) caiba sem scrollbar */
+      width: 440px; 
+      height: 920px;
+      position: relative;
+      
+      /* Reduzi a subtração do cálculo para dar mais respiro em relação aos botões */
+      transform: scale(min(1.2, calc((100vh - 290px) / 920)));
+      transform-origin: center center;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: transparent;
+      overflow: hidden;
+    }
+
+    /* =========================================
+       BOTÕES DE NAVEGAÇÃO
+       ========================================= */
+    .nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 64px;
+      height: 64px;
+      background-color: rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 110;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+    }
+
+    .nav-btn:hover {
+      background-color: #b91c1c; 
+      border-color: #b91c1c;
+      transform: translateY(-50%) scale(1.15);
+      box-shadow: 0 12px 30px rgba(185, 28, 28, 0.4);
+    }
+
+    .nav-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .prev-btn { left: 56px; }
+    .next-btn { right: 56px; }
+
+    .nav-btn:disabled {
+      opacity: 0.1;
+      cursor: not-allowed;
+      transform: translateY(-50%);
+      background-color: transparent;
+      border-color: transparent;
+      box-shadow: none;
+    }
+
+    /* =========================================
+       PAGINAÇÃO GLASSMORPHISM (Afastada)
+       ========================================= */
+    .pagination-container {
+      position: absolute;
+      /* Empurrado mais para baixo para dar respiro (era 40px, agora 20px) */
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 16px;
+      z-index: 100;
+      
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 26px;
+      border-radius: 50px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: rgba(255,255,255,0.15);
+      transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      cursor: pointer; 
+    }
+
+    .dot:hover {
+      background-color: rgba(255,255,255,0.4);
+    }
+
+    .dot.active {
+      background-color: #b91c1c;
+      width: 28px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(185, 28, 28, 0.6);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Tag Fixa -->
+  <div class="badge-corner">Protótipo Funcional</div>
+
+  <!-- Cabeçalho Unificado (Com Título Dinâmico) -->
+  <header class="board-header">
+    <img src="../imagens/logo.png" alt="BarberFlow Logo" class="board-logo">
+    <div class="header-text-block">
+      <h1>Barber<span class="brand-red">Flow</span> UX Journey</h1>
+      <div id="dynamicTitle" class="dynamic-slide-title">S1: Catálogo & Profissional</div>
+    </div>
+  </header>
+
+  <!-- Viewport do Carrossel -->
+  <div class="slider-viewport">
+    
+    <button class="nav-btn prev-btn" id="prevBtn" aria-label="Tela Anterior">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+
+    <!-- Trilha Deslizante -->
+    <div class="slider-track" id="sliderTrack">
+      
+      <!-- O atributo scrolling="no" bloqueia nativamente a barra indesejada -->
+      <div class="slide">
+        <div class="device-wrapper">
+          <iframe src="tela1.html" scrolling="no" title="Tela 1"></iframe>
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="device-wrapper">
+          <iframe src="tela2.html" scrolling="no" title="Tela 2"></iframe>
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="device-wrapper">
+          <iframe src="tela3.html" scrolling="no" title="Tela 3"></iframe>
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="device-wrapper">
+          <iframe src="tela4.html" scrolling="no" title="Tela 4"></iframe>
+        </div>
+      </div>
+
+      <div class="slide">
+        <div class="device-wrapper">
+          <iframe src="tela5.html" scrolling="no" title="Tela 5"></iframe>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="nav-btn next-btn" id="nextBtn" aria-label="Próxima Tela">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+
+    <!-- Paginação -->
+    <div class="pagination-container" id="pagination">
+      <div class="dot active" data-index="0"></div>
+      <div class="dot" data-index="1"></div>
+      <div class="dot" data-index="2"></div>
+      <div class="dot" data-index="3"></div>
+      <div class="dot" data-index="4"></div>
+    </div>
+
+  </div>
+
+  <script>
+    const track = document.getElementById('sliderTrack');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const dots = document.querySelectorAll('.dot');
+    const dynamicTitle = document.getElementById('dynamicTitle');
+    
+    // Array com os nomes das telas para o Header
+    const slideNames = [
+      "S1: Catálogo & Profissional",
+      "S2: Agenda & Horários",
+      "S3: Dados & Confirmação",
+      "S4: Agendamento Confirmado",
+      "S5: Painel do Barbeiro"
+    ];
+
+    let currentIndex = 0;
+    const totalSlides = 5;
+
+    function updateSlider() {
+      // Move o carrossel
+      track.style.transform = `translateX(-${currentIndex * 100}vw)`;
+      
+      // Atualiza o texto do Header com efeito rápido de opacidade
+      dynamicTitle.style.opacity = 0;
+      setTimeout(() => {
+        dynamicTitle.textContent = slideNames[currentIndex];
+        dynamicTitle.style.opacity = 1;
+      }, 150);
+      
+      // Atualiza estado dos botões
+      prevBtn.disabled = currentIndex === 0;
+      nextBtn.disabled = currentIndex === totalSlides - 1;
+
+      // Atualiza bolinhas
+      dots.forEach((dot, index) => {
+        if (index === currentIndex) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        updateSlider();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if (currentIndex < totalSlides - 1) {
+        currentIndex++;
+        updateSlider();
+      }
+    });
+
+    dots.forEach(dot => {
+      dot.addEventListener('click', (e) => {
+        currentIndex = parseInt(e.target.getAttribute('data-index'));
+        updateSlider();
+      });
+    });
+
+    updateSlider();
+  </script>
+</body>
+</html>
